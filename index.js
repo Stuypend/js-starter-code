@@ -22,6 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 })
 
+let currentPiece = ""
+
 function initializeBoard()
 {
     let table = document.querySelector(".board")
@@ -47,8 +49,8 @@ function initializeBoard()
 
 function addNewPiece()
 {
-    // generate a piece
-    updateBoard(pieces[1])
+    currentPiece = pieces[getRandomInt(0, pieces.length)].copy
+    updateBoard(currentPiece)
 
     // call updateBoard
 }
@@ -228,4 +230,10 @@ function moveDownFive() {
     for (let i =0; i < 8; i++) {
         moveDown(pieces[1])
     }
+}
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
 }
