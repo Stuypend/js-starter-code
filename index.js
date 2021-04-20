@@ -16,12 +16,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     let table = initializeBoard()
-    console.log(board)
 
-    addNewPiece(pieces[1])
+    let score = 0;
+    
+
+    while(!addNewPiece()) { // game
+        console.log("in outer loop")
+
+        while(!isCollision(currentPiece))  {// current piece
+                
+            console.log("in inner loop")
+
+
+            // setTimeout(message(), 1000000);
+
+           
+            sleep(3000).then(() => { moveDown(currentPiece) })
+        }
+    }
+    console.log("Game is over")
+    // addNewPiece(pieces[1])
 
 })
 
+function message () {
+    console.log("Hello World")
+}
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  
 let currentPiece = ""
 
 function initializeBoard()
@@ -49,9 +73,11 @@ function initializeBoard()
 
 function addNewPiece()
 {
-    //currentPiece = JSON.parse(JSON.stringify(pieces[getRandomInt(0, pieces.length)]));
-    currentPiece = JSON.parse(JSON.stringify(pieces[0]));
+    currentPiece = JSON.parse(JSON.stringify(pieces[getRandomInt(0, pieces.length)]));
+    // currentPiece = JSON.parse(JSON.stringify(pieces[0]));
     updateBoard(currentPiece)
+
+    return isCollision(currentPiece)
 
 }
 
@@ -63,16 +89,11 @@ function updateBoard(pieceType) {
 
 }
 
-function timeStep(pieceType) {
-    pieceType.coordinates.forEach(coord => { // x and y coordindates
-        // debugger
-        board[coord[0]] [coord[1]] = "gray"
-        updateCell(coord[0], coord[1])
-        coord[0]++
-    });
-    addNextPiece(pieceType)
-
-}
+// function timeStep() {
+//     if (!isCollision(currentPiece)) {
+//         moveDown(currentPiece)
+//     }
+// }
 
 function isInBounds(piece, move)
 {
@@ -218,7 +239,7 @@ function isMe(piece, newCoords) { //newCoords is an array of new location
     return false
 }
 
-function collisionCheck(piece) {
+function isCollision(piece) { //returns true if there is a collision
 
     let coords = piece.coordinates
 
@@ -274,3 +295,5 @@ function getRandomInt(min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
 }
+
+
