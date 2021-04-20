@@ -3,18 +3,17 @@ let board = []
 // let table = document.querySelector(".board")
 
 let pieces = [
-    { coordinates: [ [0,0], [0,1], [1,0], [1,2] ], color: "blue", letter: "O"},
+    { coordinates: [ [0,0], [0,1], [1,0], [1,1] ], color: "yellow", letter: "O"},
     { coordinates: [ [0,0], [0,1], [0,2], [0,3] ], color: "blue", letter: "I"},
-    { coordinates: [ [1,0], [1,1], [0,1], [0,2] ], color: "blue", letter: "S"},
-    { coordinates: [ [0,0], [0,1], [1,1], [1,2] ], color: "blue", letter: "Z"},
-    { coordinates: [ [0,0], [1,0], [2,0], [2,1] ], color: "blue", letter: "L"},
-    { coordinates: [ [0,2], [1,2], [1,1], [0,1] ], color: "blue", letter: "J"},
-    { coordinates: [ [0,0], [0,1], [0,2], [1,1] ], color: "blue", letter: "T"}
+    { coordinates: [ [1,0], [1,1], [0,1], [0,2] ], color: "red", letter: "S"},
+    { coordinates: [ [0,0], [0,1], [1,1], [1,2] ], color: "green", letter: "Z"},
+    { coordinates: [ [0,0], [1,0], [2,0], [2,1] ], color: "orange", letter: "L"},
+    { coordinates: [ [0,2], [1,2], [1,1], [0,1] ], color: "pink", letter: "J"},
+    { coordinates: [ [0,0], [0,1], [0,2], [1,1] ], color: "purple", letter: "T"}
 ]
 
 document.addEventListener('DOMContentLoaded', () => {
 
-   
 
     let table = initializeBoard()
     console.log(board)
@@ -102,18 +101,14 @@ function isInBounds(piece, move)
         {
             for (let i = 0; i < coords.length; i++)
             {
-                if (coords[i][0] + 1 > board[0][0].length)
+                if (coords[i][0] + 1 >= board.length)
                     return false;
 
             }
             break;
         }
-
     }
-
     return true
-
-
 }
 
 function isOpen(piece, move)
@@ -122,38 +117,38 @@ function isOpen(piece, move)
 
     switch (move) {
         case "right":
+            // debugger
             for (let i = 0; i < coords.length; i++)
+
             {
-                if (board[coord[0]][coord[1]+1] != "gray")
+                if (!isMe(piece, [coords[i][0],coords[i][1]+1]) && board[coords[i][0]][coords[i][1]+1] != "gray")
                     return false
             }
-
-
-            })
             break;
         case "left":
-            coords.forEach(coord => {
-                if (board[coord[0]][coord[1]-1] != "gray")
+            for (let i = 0; i < coords.length; i++)
+            {
+                if (!isMe(piece, [coords[i][0],coords[i][1]-1]) && board[coords[i][0]][coords[i][1]-1] != "gray")
                     return false
-
-            })
+            }
             break;
         case "down":
-            coords.forEach(coord => {
-                if (board[coord[0]+1][coord[1]] != "gray")
+             for (let i = 0; i < coords.length; i++)
+            {
+                if (!isMe(piece, [coords[i][0]+1,coords[i][1]]) && board[coords[i][0]+1][coords[i][1]] != "gray")
                     return false
-
-            })
+            }
+            break;
     }
     return true
-
-
 }
 
 function moveRight(piece)
 {
+    
     if (isInBounds(piece, "right") && isOpen(piece, "right"))
     {
+        
         piece.coordinates.forEach(coord => { // x and y coordindates
             updateCell(coord[0], coord[1]) //changing the table cell to gray
             coord[1]++
@@ -178,6 +173,7 @@ function moveLeft(piece)
 
 function moveDown(piece)
 {
+    // debugger
     if (isInBounds(piece, "down") && isOpen(piece, "down"))
     {
         piece.coordinates.forEach(coord => { // x and y coordindates
@@ -200,3 +196,36 @@ function updateCell(row, col, color="gray")
 }
 
 
+function isMe(piece, newCoords) { //newCoords is an array of new location
+    coords = piece.coordinates
+    for ( let i = 0; i < coords.length; i++) {
+        if (coords[i][0] == newCoords[0] && coords[i][1] == newCoords[1]) {
+            return true
+        }
+    }
+    return false
+}
+
+function collisionCheck(piece) {
+
+    let coords = piece.coordinates
+
+    for (let i = 0; i < coords.length; i++)
+        {
+            let row = coords[i][0] + 1 
+            let col = coords[i][1]
+            // debugger
+            if (!isInBounds(piece, "down")) {
+                return true
+            } else if (!isMe(piece, [row, col]) && board[row][col] != "gray") {
+                return true
+            }
+        } 
+    return false 
+}
+
+function moveDownFive() {
+    for (let i =0; i < 8; i++) {
+        moveDown(pieces[1])
+    }
+}
