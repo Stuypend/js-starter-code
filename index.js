@@ -10,7 +10,10 @@ let pieces = [
     { coordinates: [ [0,0], [1,0], [2,0], [2,1] ], color: "orange", letter: "L"},
     { coordinates: [ [0,2], [1,2], [1,1], [0,1] ], color: "pink", letter: "J"},
     { coordinates: [ [0,0], [0,1], [0,2], [1,1] ], color: "purple", letter: "T"}
+    
 ]
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -18,12 +21,25 @@ document.addEventListener('DOMContentLoaded', () => {
     let table = initializeBoard()
 
     let score = 0;
+
+    sleep(3000).then(() => { console.log("first delay") })
+    sleep(3000).then(() => { console.log("second delay") })
     
+    addNewPiece()
+
+    // setInterval(message(), 100);
+
+    document.addEventListener('click', event => {
+        console.log(event.target)
+        setInterval(message(), 100);
+    })
+
+
 
     while(!addNewPiece()) { // game
         console.log("in outer loop")
 
-        while(!isCollision(currentPiece))  {// current piece
+        while(!isCollision(currentPiece) || wait())  {// current piece
                 
             console.log("in inner loop")
 
@@ -38,6 +54,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // addNewPiece(pieces[1])
 
 })
+
+function wait() {
+    sleep(3000).then(() => { return true })
+}
 
 function message () {
     console.log("Hello World")
