@@ -13,23 +13,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
 })
 
-
+let longPiece = { coordinates: [ [0,0], [0,1], [0,2], [0,3] ], color: "blue"}
 
 function initializeBoard()
 {
     let table = document.querySelector(".board")
 
-    for (let i = 0; i < 10; i++)
+    for (let row = 0; row < 10; row++)
     {
         board.push([])
         let newRow = document.createElement("tr")
         newRow.dataset.row = i
-        for (let j = 0; j < 5; j++) //columns
+        for (let col = 0; col < 5; col++) //columns
         {
-            board[i][j] = "gray"
+            board[row][col] = "gray"
             let cell = document.createElement("td")
-            cell.dataset.row = i
-            cell.dataset.col = j
+            cell.dataset.row = row
+            cell.dataset.col = col
             newRow.append(cell)
         }
         table.append(newRow)
@@ -53,8 +53,6 @@ function updateBoard(pieceType) {
 
 }
 
-let longPiece = { coordinates: [ [0,0], [0,1], [0,2], [0,3] ], color: "blue"}
-
 function timeStep(pieceType) {
     pieceType.coordinates.forEach(coord => { // x and y coordindates
         // debugger
@@ -70,33 +68,39 @@ function isInBounds(piece, move)
 {
     let coords =  piece.coordinates
 
-   /* switch (move) {
+    switch (move)
+    {
         case "right":
-            coords.forEach(coord => {
-                if (coord[1] + 1 > board[0].length)
+            for(let i = 0; i < coords.length; i++)
+            {
+                if (coords[i][1] + 1 > board[0].length)
                     return false;
-
-            })
-            break;*/
-
-        if(move == "left") {
-            debugger
-            coords.forEach(coord => {
-                if (coord[1] - 1 < 0) {
-                    return false;
-                }
-
-            })
-        }
-    /*
+            }
             break;
-        case "down":
-            coords.forEach(coord => {
-                if (coord[0] + 1 > board[0][0].length)
+
+        case "left":
+        {
+            for(let i = 0; i < coords.length; i++)
+            {
+                if (coords[i][1] - 1 < 0)
                     return false;
 
-            })
-    }*/
+            }
+            break;
+        }
+
+        case "down":
+        {
+            for (let i = 0; i < coords.length; i++)
+            {
+                if (coords[i][0] + 1 > board[0][0].length)
+                    return false;
+
+            }
+            break;
+        }
+
+    }
 
     return true
 
@@ -109,9 +113,12 @@ function isOpen(piece, move)
 
     switch (move) {
         case "right":
-            coords.forEach(coord => {
+            for (let i = 0; i < coords.length; i++)
+            {
                 if (board[coord[0]][coord[1]+1] != "gray")
                     return false
+            }
+
 
             })
             break;
