@@ -23,7 +23,8 @@ function initializeBoard()
     {
         board.push([])
         let newRow = document.createElement("tr")
-        newRow.dataset.row = i
+        newRow.dataset.row = row
+
         for (let col = 0; col < 5; col++) //columns
         {
             board[row][col] = "gray"
