@@ -34,7 +34,7 @@ function initializeBoard()
         let newRow = document.createElement("tr")
         newRow.dataset.row = row
 
-        for (let col = 0; col < 5; col++) //columns
+        for (let col = 0; col < 4; col++) //columns
         {
             board[row][col] = "gray"
             let cell = document.createElement("td")
@@ -49,10 +49,10 @@ function initializeBoard()
 
 function addNewPiece()
 {
-    currentPiece = pieces[getRandomInt(0, pieces.length)].copy
+    //currentPiece = JSON.parse(JSON.stringify(pieces[getRandomInt(0, pieces.length)]));
+    currentPiece = JSON.parse(JSON.stringify(pieces[0]));
     updateBoard(currentPiece)
 
-    // call updateBoard
 }
 
 function updateBoard(pieceType) {
@@ -197,6 +197,16 @@ function updateCell(row, col, color="gray")
     tableCell.style.backgroundColor = color
 }
 
+function updateTable()
+{
+    for(let row = 0; row < board.length; row++)
+    {
+        for(let col = 0; col < board[row].length; col++)
+        {
+            updateCell(row, col, board[row][col])
+        }
+    }
+}
 
 function isMe(piece, newCoords) { //newCoords is an array of new location
     coords = piece.coordinates
@@ -226,9 +236,36 @@ function collisionCheck(piece) {
     return false 
 }
 
+function checkForRow(row)
+{
+    for(let col = 0; col < board[row].length; col++)
+    {
+        if (board[row][col] == "gray")
+            return false
+    }
+    return true;
+}
+
+function clearRow(startRow)
+{
+    for(let row = startRow; row-1 >= 0; row--)
+    {
+        for(let col = 0; col < board[row].length; col++)
+        {
+            board[row][col] = board[row-1][col]
+        }
+    }
+
+    for(let col = 0; col < board[0].length; col++)
+    {
+        board[0][col] = "gray"
+    }
+   updateTable()
+}
+
 function moveDownFive() {
-    for (let i =0; i < 8; i++) {
-        moveDown(pieces[1])
+    for (let i =0; i < 9; i++) {
+        moveDown(currentPiece)
     }
 }
 
