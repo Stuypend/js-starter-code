@@ -2,6 +2,16 @@
 let board = []
 // let table = document.querySelector(".board")
 
+let pieces = [
+    { coordinates: [ [0,0], [0,1], [1,0], [1,2] ], color: "blue", letter: "O"},
+    { coordinates: [ [0,0], [0,1], [0,2], [0,3] ], color: "blue", letter: "I"},
+    { coordinates: [ [1,0], [1,1], [0,1], [0,2] ], color: "blue", letter: "S"},
+    { coordinates: [ [0,0], [0,1], [1,1], [1,2] ], color: "blue", letter: "Z"},
+    { coordinates: [ [0,0], [1,0], [2,0], [2,1] ], color: "blue", letter: "L"},
+    { coordinates: [ [0,2], [1,2], [1,1], [0,1] ], color: "blue", letter: "J"},
+    { coordinates: [ [0,0], [0,1], [0,2], [1,1] ], color: "blue", letter: "T"}
+]
+
 document.addEventListener('DOMContentLoaded', () => {
 
    
@@ -53,7 +63,7 @@ function updateBoard(pieceType) {
 
 }
 
-let longPiece = { coordinates: [ [0,0], [0,1], [0,2], [0,3] ], color: "blue"}
+
 
 function timeStep(pieceType) {
     pieceType.coordinates.forEach(coord => { // x and y coordindates
