@@ -13,47 +13,49 @@ let pieces = [
     
 ]
 
+// setInterval(alert("alert"), 1000);
 
+// let timer = setInterval(moveDown, 1000, currentPiece);
 
 document.addEventListener('DOMContentLoaded', () => {
 
 
     let table = initializeBoard()
-
     let score = 0;
 
-    sleep(3000).then(() => { console.log("first delay") })
-    sleep(3000).then(() => { console.log("second delay") })
+    document.addEventListener("keydown", event => {
+            if (event.code == "ArrowLeft") {
+                moveLeft(currentPiece)
+            } else if (event.code == "ArrowRight") {
+                moveRight(currentPiece)
+            } else if (event.code == "ArrowDown") {
+                moveDown(currentPiece)
+            }
+        });
     
     addNewPiece()
 
-    // setInterval(message(), 100);
-
-    document.addEventListener('click', event => {
-        console.log(event.target)
-        setInterval(message(), 100);
-    })
-
-
-
-    while(!addNewPiece()) { // game
-        console.log("in outer loop")
-
-        while(!isCollision(currentPiece) || wait())  {// current piece
-                
-            console.log("in inner loop")
-
-
-            // setTimeout(message(), 1000000);
-
-           
-            sleep(3000).then(() => { moveDown(currentPiece) })
+    let timer = setInterval(() => {
+        moveDown(currentPiece)
+        if (isCollision(currentPiece)) {
+            for(let i =0; i < coords.length; i++) {
+                if(isRowFull(coords[i][0])) {
+                    clearRow(coords[i][0])
+                }
+            }
+            if (!addNewPiece()) {
+                console.log("GAME OVER")
+                clearInterval(timer)
+            }  
         }
-    }
-    console.log("Game is over")
-    // addNewPiece(pieces[1])
+
+
+
+    }, 1000)
 
 })
+
+
 
 function wait() {
     sleep(3000).then(() => { return true })
@@ -97,7 +99,7 @@ function addNewPiece()
     // currentPiece = JSON.parse(JSON.stringify(pieces[0]));
     updateBoard(currentPiece)
 
-    return isCollision(currentPiece)
+    return !isCollision(currentPiece)
 
 }
 
@@ -277,7 +279,7 @@ function isCollision(piece) { //returns true if there is a collision
     return false 
 }
 
-function checkForRow(row)
+function isRowFull(row)
 {
     for(let col = 0; col < board[row].length; col++)
     {
