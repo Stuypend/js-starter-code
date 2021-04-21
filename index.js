@@ -3,13 +3,13 @@ let board = []
 
 
 let pieces = [
-    { coordinates: [ [0,0], [0,1], [1,0], [1,1] ], color: "yellow", letter: "O"},
-    { coordinates: [ [0,0], [0,1], [0,2], [0,3] ], color: "blue", letter: "I"},
-    { coordinates: [ [1,0], [1,1], [0,1], [0,2] ], color: "red", letter: "S"},
-    { coordinates: [ [0,0], [0,1], [1,1], [1,2] ], color: "green", letter: "Z"},
-    { coordinates: [ [0,0], [1,0], [2,0], [2,1] ], color: "orange", letter: "L"},
-    { coordinates: [ [0,2], [1,2], [1,1], [0,1] ], color: "pink", letter: "J"},
-    { coordinates: [ [0,0], [0,1], [0,2], [1,1] ], color: "purple", letter: "T"}
+    { coordinates: [ [0,0], [0,1], [1,0], [1,1] ], color: "yellow", letter: "O", position: 1},
+    { coordinates: [ [0,0], [0,1], [0,2], [0,3] ], color: "blue", letter: "I", position: 1},
+    { coordinates: [ [0,0], [0,1], [1,1], [1,2] ], color: "red", letter: "S", position: 1},
+    { coordinates: [ [1,0], [1,1], [0,1], [0,2] ], color: "green", letter: "Z", position: 1},
+    { coordinates: [ [1,0], [1,1], [1,2], [0,2] ], color: "orange", letter: "L", position: 1},
+    { coordinates: [ [0,0], [1,0], [1,1], [1,2] ], color: "pink", letter: "J", position: 1},
+    { coordinates: [ [0,1], [1,0], [1,1], [1,2] ], color: "purple", letter: "T", position: 1}
     
 ]
 
@@ -161,6 +161,10 @@ function isOpen(piece, move)
                     return false
             }
             break;
+        case "rotate":
+        {
+            current piec.position, type
+        }
     }
     return true
 }
@@ -292,6 +296,47 @@ function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+}
+
+function isValid(piece)
+{
+
+}
+function rotate()
+{
+    let coords = currentPiece.coordinates
+
+    switch (currentPiece.letter)
+    {
+        case "I":
+        {
+            if(currentPiece.position == 1)
+            {
+               let newCoords = [ [coords[0][0]-1, coords[0][1]+2], [coords[0][0], coords[0][1]+1], [coords[0][0]+1, coords[0][1]], [coords[0][0]+2, coords[0][1]-1], ]
+                for (let i = 0; i < newCoords.length; i++)
+                {
+                    if (!isMe(currentPiece, [newCoords[i][0],newCoords[i][1]]) && board[newCoords[i][0]][newCoords[i][1]] != "gray")
+                        return false
+
+                }
+                currentPiece.coordinates = newCoords
+                currentPiece.position = 2
+
+            }
+            else
+            {
+                let newCoords = [ [coords[0][0]+1, coords[0][1]-2], [coords[0][0], coords[0][1]-1], [coords[0][0]-1, coords[0][1]], [coords[0][0]-2, coords[0][1]+1], ]
+                for (let i = 0; i < newCoords.length; i++)
+                {
+                    if (!isMe(currentPiece, [newCoords[i][0],newCoords[i][1]]) && board[newCoords[i][0]][newCoords[i][1]] != "gray")
+                        return false
+
+                }
+                currentPiece.coordinates = newCoords
+                currentPiece.position = 2
+            }
+        },
+    }
 }
 
 
