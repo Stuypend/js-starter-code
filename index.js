@@ -1,6 +1,6 @@
 //global variables
 let board = []
-// let table = document.querySelector(".board")
+
 
 let pieces = [
     { coordinates: [ [0,0], [0,1], [1,0], [1,1] ], color: "yellow", letter: "O"},
@@ -13,9 +13,7 @@ let pieces = [
     
 ]
 
-// setInterval(alert("alert"), 1000);
 
-// let timer = setInterval(moveDown, 1000, currentPiece);
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -56,18 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 
-
-function wait() {
-    sleep(3000).then(() => { return true })
-}
-
-function message () {
-    console.log("Hello World")
-}
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-  
 let currentPiece = ""
 
 function initializeBoard()
@@ -96,7 +82,6 @@ function initializeBoard()
 function addNewPiece()
 {
     currentPiece = JSON.parse(JSON.stringify(pieces[getRandomInt(0, pieces.length)]));
-    // currentPiece = JSON.parse(JSON.stringify(pieces[0]));
     updateBoard(currentPiece)
 
     return !isCollision(currentPiece)
@@ -110,12 +95,6 @@ function updateBoard(pieceType) {
     });
 
 }
-
-// function timeStep() {
-//     if (!isCollision(currentPiece)) {
-//         moveDown(currentPiece)
-//     }
-// }
 
 function isInBounds(piece, move)
 {
@@ -162,9 +141,7 @@ function isOpen(piece, move)
 
     switch (move) {
         case "right":
-            // debugger
             for (let i = 0; i < coords.length; i++)
-
             {
                 if (!isMe(piece, [coords[i][0],coords[i][1]+1]) && board[coords[i][0]][coords[i][1]+1] != "gray")
                     return false
@@ -218,7 +195,6 @@ function moveLeft(piece)
 
 function moveDown(piece)
 {
-    // debugger
     if (isInBounds(piece, "down") && isOpen(piece, "down"))
     {
         piece.coordinates.forEach(coord => { // x and y coordindates
