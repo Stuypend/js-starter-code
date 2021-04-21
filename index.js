@@ -5,8 +5,8 @@ let board = []
 let pieces = [
     { coordinates: [ [0,0], [0,1], [1,0], [1,1] ], color: "yellow", letter: "O", position: 1},
     { coordinates: [ [0,0], [0,1], [0,2], [0,3] ], color: "blue", letter: "I", position: 1},
-    { coordinates: [ [0,0], [0,1], [1,1], [1,2] ], color: "red", letter: "S", position: 1},
-    { coordinates: [ [1,0], [1,1], [0,1], [0,2] ], color: "green", letter: "Z", position: 1},
+    { coordinates: [ [0,0], [0,1], [1,1], [1,2] ], color: "red", letter: "Z", position: 1},
+    { coordinates: [ [1,0], [1,1], [0,1], [0,2] ], color: "green", letter: "S", position: 1},
     { coordinates: [ [1,0], [1,1], [1,2], [0,2] ], color: "orange", letter: "L", position: 1},
     { coordinates: [ [0,0], [1,0], [1,1], [1,2] ], color: "pink", letter: "J", position: 1},
     { coordinates: [ [0,1], [1,0], [1,1], [1,2] ], color: "purple", letter: "T", position: 1}
@@ -28,7 +28,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 moveRight(currentPiece)
             } else if (event.code == "ArrowDown") {
                 moveDown(currentPiece)
+            } else if (event.code == "Space") {
+                console.log("Space")
+                rotate()
             }
+
+            rotate
         });
     
     addNewPiece()
@@ -60,13 +65,13 @@ function initializeBoard()
 {
     let table = document.querySelector(".board")
 
-    for (let row = 0; row < 10; row++)
+    for (let row = 0; row < 20; row++)
     {
         board.push([])
         let newRow = document.createElement("tr")
         newRow.dataset.row = row
 
-        for (let col = 0; col < 4; col++) //columns
+        for (let col = 0; col < 8; col++) //columns
         {
             board[row][col] = "gray"
             let cell = document.createElement("td")
@@ -81,20 +86,15 @@ function initializeBoard()
 
 function addNewPiece()
 {
-    currentPiece = JSON.parse(JSON.stringify(pieces[getRandomInt(0, pieces.length)]));
+    // currentPiece = JSON.parse(JSON.stringify(pieces[getRandomInt(0, pieces.length)]));
+    currentPiece = JSON.parse(JSON.stringify(pieces[3]));
     updateBoard(currentPiece)
 
     return !isCollision(currentPiece)
 
 }
 
-function updateBoard(pieceType) {
 
-    pieceType.coordinates.forEach(coord => { // x and y coordindate
-        updateCell(coord[0], coord[1], pieceType.color)
-    });
-
-}
 
 function isInBounds(piece, move)
 {
@@ -161,10 +161,6 @@ function isOpen(piece, move)
                     return false
             }
             break;
-        case "rotate":
-        {
-            current piec.position, type
-        }
     }
     return true
 }
@@ -210,17 +206,25 @@ function moveDown(piece)
 
 }
 
-function updateCell(row, col, color="gray")
-{
-    board[row][col] = color
+function updateBoard(pieceType) { // Updating Board and Table for an entire piece
 
-    let tableRow = document.querySelector(`[data-row="${row}"]`)
-    let tableCell = tableRow.querySelector(`[data-col="${col}"]`)
+    pieceType.coordinates.forEach(coord => { // x and y coordindate
+        updateCell(coord[0], coord[1], pieceType.color)
+    });
+
+}
+
+function updateCell(row, col, color="gray") // Updates One cell on Board and Table
+{
+    board[row][col] = color // updates board
+
+    let tableRow = document.querySelector(`[data-row="${row}"]`)  // update table
+    let tableCell = tableRow.querySelector(`[data-col="${col}"]`)  // update table
 
     tableCell.style.backgroundColor = color
 }
 
-function updateTable()
+function updateTable() // Updating All Cells on Board and Table
 {
     for(let row = 0; row < board.length; row++)
     {
@@ -298,10 +302,17 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
 }
 
-function isValid(piece)
+function isRotateValid(newCoords)
 {
+    for (let i = 0; i < newCoords.length; i++)
+    {
+        if (!isMe(currentPiece, [newCoords[i][0],newCoords[i][1]]) && board[newCoords[i][0]][newCoords[i][1]] != "gray")
+            return false
 
+    }
+    return true;
 }
+
 function rotate()
 {
     let coords = currentPiece.coordinates
@@ -310,33 +321,196 @@ function rotate()
     {
         case "I":
         {
+            // debugger
             if(currentPiece.position == 1)
             {
-               let newCoords = [ [coords[0][0]-1, coords[0][1]+2], [coords[0][0], coords[0][1]+1], [coords[0][0]+1, coords[0][1]], [coords[0][0]+2, coords[0][1]-1], ]
-                for (let i = 0; i < newCoords.length; i++)
-                {
-                    if (!isMe(currentPiece, [newCoords[i][0],newCoords[i][1]]) && board[newCoords[i][0]][newCoords[i][1]] != "gray")
-                        return false
-
+               let newCoords = [ [coords[0][0]-1, coords[0][1]+2], [coords[1][0], coords[1][1]+1], [coords[2][0]+1, coords[2][1]], [coords[3][0]+2, coords[3][1]-1] ]
+                if (isRotateValid(newCoords)) {
+                    for (let i = 0; i < coords.length; i++) {
+                        updateCell(coords[i][0], coords[i][1])
+                    }
+                    currentPiece.coordinates = newCoords
+                    currentPiece.position++
+                    updateBoard(currentPiece)
                 }
-                currentPiece.coordinates = newCoords
-                currentPiece.position = 2
-
+                // return false
+                
             }
             else
             {
-                let newCoords = [ [coords[0][0]+1, coords[0][1]-2], [coords[0][0], coords[0][1]-1], [coords[0][0]-1, coords[0][1]], [coords[0][0]-2, coords[0][1]+1], ]
-                for (let i = 0; i < newCoords.length; i++)
-                {
-                    if (!isMe(currentPiece, [newCoords[i][0],newCoords[i][1]]) && board[newCoords[i][0]][newCoords[i][1]] != "gray")
-                        return false
-
+                let newCoords = [ [coords[0][0]+1, coords[0][1]-2], [coords[1][0], coords[1][1]-1], [coords[2][0]-1, coords[2][1]], [coords[3][0]-2, coords[3][1]+1] ]
+                if (isRotateValid(newCoords)) {
+                    for (let i = 0; i < coords.length; i++) {
+                        updateCell(coords[i][0], coords[i][1])
+                    }
+                    currentPiece.coordinates = newCoords
+                    currentPiece.position--
+                    updateBoard(currentPiece)
                 }
-                currentPiece.coordinates = newCoords
-                currentPiece.position = 2
             }
-        },
+        }
+        case "Z":
+        {
+            if(currentPiece.position == 1)
+            {
+               let newCoords = [ [coords[0][0], coords[0][1]+2], [coords[1][0]+1, coords[1][1]+1], [coords[2][0], coords[2][1]], [coords[3][0]+1, coords[3][1]-1]]
+            //    debugger
+                if (isRotateValid(newCoords)) {
+                    for (let i = 0; i < coords.length; i++) {
+                        updateCell(coords[i][0], coords[i][1])
+                    }
+                    currentPiece.coordinates = newCoords
+                    currentPiece.position++
+                    updateBoard(currentPiece)
+                }  
+            } else if(currentPiece.position == 2)
+            {
+               let newCoords = [ [coords[0][0]+2, coords[0][1]], [coords[1][0]+1, coords[1][1]-1], [coords[2][0], coords[2][1]], [coords[3][0]-1, coords[3][1]-1] ]
+                if (isRotateValid(newCoords)) {
+                    for (let i = 0; i < coords.length; i++) {
+                        updateCell(coords[i][0], coords[i][1])
+                    }
+                    currentPiece.coordinates = newCoords
+                    currentPiece.position++
+                    updateBoard(currentPiece)
+                }  
+            } else if(currentPiece.position == 3)
+            {
+               let newCoords = [ [coords[0][0], coords[0][1]-2], [coords[1][0]-1, coords[1][1]-1], [coords[2][0], coords[2][1]], [coords[3][0]-1, coords[3][1]+1] ]
+                if (isRotateValid(newCoords)) {
+                    for (let i = 0; i < coords.length; i++) {
+                        updateCell(coords[i][0], coords[i][1])
+                    }
+                    currentPiece.coordinates = newCoords
+                    currentPiece.position++
+                    updateBoard(currentPiece)
+                }  
+            }
+            else if(currentPiece.position == 4)
+            {
+               let newCoords = [ [coords[0][0]-2, coords[0][1]], [coords[1][0]-1, coords[1][1]+1], [coords[2][0], coords[2][1]], [coords[3][0]+1, coords[3][1]+1] ]
+                if (isRotateValid(newCoords)) {
+                    for (let i = 0; i < coords.length; i++) {
+                        updateCell(coords[i][0], coords[i][1])
+                    }
+                    currentPiece.coordinates = newCoords
+                    currentPiece.position = 1
+                    updateBoard(currentPiece)
+                }  
+            }
+        }
+        case "S":
+        {
+            if(currentPiece.position == 1)
+            {
+                // let newCoords = [ [coords[0][0], coords[0][1]+2], [coords[1][0]+1, coords[1][1]+1], [coords[2][0], coords[2][1]], [coords[3][0]+1, coords[3][1]-1]] // Z
+            //    debugger
+                let newCoords = [ [coords[0][0]-1, coords[0][1]+1], [coords[1][0], coords[1][1]], [coords[2][0]+1, coords[2][1]+1], [coords[3][0]+2, coords[3][1]]] // S
+                if (isRotateValid(newCoords)) {
+                    for (let i = 0; i < coords.length; i++) {
+                        updateCell(coords[i][0], coords[i][1])
+                    }
+                    currentPiece.coordinates = newCoords
+                    currentPiece.position++
+                    updateBoard(currentPiece)
+                }  
+            } else if(currentPiece.position == 2)
+            {
+                // let newCoords = [ [coords[0][0]+2, coords[0][1]], [coords[1][0]+1, coords[1][1]-1], [coords[2][0], coords[2][1]], [coords[3][0]-1, coords[3][1]-1] ]
+                let newCoords = [ [coords[0][0]+1, coords[0][1]+1], [coords[1][0], coords[1][1]], [coords[2][0]+1, coords[2][1]-1], [coords[3][0], coords[3][1]-2] ]
+                if (isRotateValid(newCoords)) {
+                    for (let i = 0; i < coords.length; i++) {
+                        updateCell(coords[i][0], coords[i][1])
+                    }
+                    currentPiece.coordinates = newCoords
+                    currentPiece.position++
+                    updateBoard(currentPiece)
+                }  
+            } else if(currentPiece.position == 3)
+            {
+                let newCoords = [ [coords[0][0]+1, coords[0][1]-1], [coords[1][0], coords[1][1]], [coords[2][0]-1, coords[2][1]-1], [coords[3][0]-2, coords[3][1]] ]
+                // debugger
+                if (isRotateValid(newCoords)) {
+                    for (let i = 0; i < coords.length; i++) {
+                        updateCell(coords[i][0], coords[i][1])
+                    }
+                    currentPiece.coordinates = newCoords
+                    currentPiece.position++
+                    updateBoard(currentPiece)
+                }  
+            }
+            else if(currentPiece.position == 4)
+            {
+                // let newCoords = [ [coords[0][0]-2, coords[0][1]], [coords[1][0]-1, coords[1][1]+1], [coords[2][0], coords[2][1]], [coords[3][0]+1, coords[3][1]+1] ]
+                let newCoords = [ [coords[0][0]-1, coords[0][1]-1], [coords[1][0], coords[1][1]], [coords[2][0]-1, coords[2][1]+1], [coords[3][0], coords[3][1]+2] ]
+                // debugger
+                if (isRotateValid(newCoords)) {
+                    for (let i = 0; i < coords.length; i++) {
+                        updateCell(coords[i][0], coords[i][1])
+                    }
+                    currentPiece.coordinates = newCoords
+                    currentPiece.position = 1
+                    updateBoard(currentPiece)
+                }  
+            }
+        }
+        case "S":
+        {
+            if(currentPiece.position == 1)
+            {
+                // let newCoords = [ [coords[0][0], coords[0][1]+2], [coords[1][0]+1, coords[1][1]+1], [coords[2][0], coords[2][1]], [coords[3][0]+1, coords[3][1]-1]] // Z
+            //    debugger
+                let newCoords = [ [coords[0][0]-1, coords[0][1]+1], [coords[1][0], coords[1][1]], [coords[2][0]+1, coords[2][1]+1], [coords[3][0]+2, coords[3][1]]] // S
+                if (isRotateValid(newCoords)) {
+                    for (let i = 0; i < coords.length; i++) {
+                        updateCell(coords[i][0], coords[i][1])
+                    }
+                    currentPiece.coordinates = newCoords
+                    currentPiece.position++
+                    updateBoard(currentPiece)
+                }  
+            } else if(currentPiece.position == 2)
+            {
+                // let newCoords = [ [coords[0][0]+2, coords[0][1]], [coords[1][0]+1, coords[1][1]-1], [coords[2][0], coords[2][1]], [coords[3][0]-1, coords[3][1]-1] ]
+                let newCoords = [ [coords[0][0]+1, coords[0][1]+1], [coords[1][0], coords[1][1]], [coords[2][0]+1, coords[2][1]-1], [coords[3][0], coords[3][1]-2] ]
+                if (isRotateValid(newCoords)) {
+                    for (let i = 0; i < coords.length; i++) {
+                        updateCell(coords[i][0], coords[i][1])
+                    }
+                    currentPiece.coordinates = newCoords
+                    currentPiece.position++
+                    updateBoard(currentPiece)
+                }  
+            } else if(currentPiece.position == 3)
+            {
+                let newCoords = [ [coords[0][0]+1, coords[0][1]-1], [coords[1][0], coords[1][1]], [coords[2][0]-1, coords[2][1]-1], [coords[3][0]-2, coords[3][1]] ]
+                // debugger
+                if (isRotateValid(newCoords)) {
+                    for (let i = 0; i < coords.length; i++) {
+                        updateCell(coords[i][0], coords[i][1])
+                    }
+                    currentPiece.coordinates = newCoords
+                    currentPiece.position++
+                    updateBoard(currentPiece)
+                }  
+            }
+            else if(currentPiece.position == 4)
+            {
+                // let newCoords = [ [coords[0][0]-2, coords[0][1]], [coords[1][0]-1, coords[1][1]+1], [coords[2][0], coords[2][1]], [coords[3][0]+1, coords[3][1]+1] ]
+                let newCoords = [ [coords[0][0]-1, coords[0][1]-1], [coords[1][0], coords[1][1]], [coords[2][0]-1, coords[2][1]+1], [coords[3][0], coords[3][1]+2] ]
+                // debugger
+                if (isRotateValid(newCoords)) {
+                    for (let i = 0; i < coords.length; i++) {
+                        updateCell(coords[i][0], coords[i][1])
+                    }
+                    currentPiece.coordinates = newCoords
+                    currentPiece.position = 1
+                    updateBoard(currentPiece)
+                }  
+            }
+        }
     }
+    
 }
 
 
