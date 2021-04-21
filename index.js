@@ -1,5 +1,6 @@
 //global variables
 let board = []
+let score = 0
 
 
 let pieces = [
@@ -20,8 +21,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let table = initializeBoard()
     let score = 0;
+    let rowsCleared = 0
 
-    document.addEventListener("keydown", event => {
+    document.querySelector(".username-form").addEventListener("submit", event => {
+
+        // fetch username or create
+        // set user id
+
+        document.addEventListener("keydown", event => {
             if (event.code == "ArrowLeft") {
                 moveLeft(currentPiece)
             } else if (event.code == "ArrowRight") {
@@ -32,46 +39,58 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log("Space")
                 rotate()
             }
-
-            rotate
         });
-    
-    addNewPiece()
 
-    let timer = setInterval(() => {
-        moveDown(currentPiece)
-        if (isCollision(currentPiece)) {
-            for(let i =0; i < coords.length; i++) {
-                if(isRowFull(coords[i][0])) {
-                    clearRow(coords[i][0])
+        addNewPiece()
+
+        let timer = setInterval(() => {
+            moveDown(currentPiece)
+            let clearMultiplier = 0
+            if (isCollision(currentPiece)) {
+                for (let i = 0; i < coords.length; i++) {
+                    if (isRowFull(coords[i][0])) {
+                        clearRow(coords[i][0])
+                        clearMultiplier++
+                        rowsCleared++
+                    }
+                }
+                awardPoints(clearMultiplier, rowsCleared)
+                if (!addNewPiece()) {
+                    console.log("GAME OVER")
+                    clearInterval(timer)
                 }
             }
-            if (!addNewPiece()) {
-                console.log("GAME OVER")
-                clearInterval(timer)
-            }  
-        }
 
 
+        }, 1000)
 
-    }, 1000)
+        // fetch( save score to the user)
+    })
 
 })
 
 
 let currentPiece = ""
 
+function awardPoints(multi, rows)
+{
+    let level = Math.floor(rows/10)
+    score += 40 * multi * (level+1)
+
+    document.querySelector("h1").textContent = `Score: ${score} Level: ${level}`
+}
+
 function initializeBoard()
 {
     let table = document.querySelector(".board")
 
-    for (let row = 0; row < 20; row++)
+    for (let row = 0; row < 5; row++)
     {
         board.push([])
         let newRow = document.createElement("tr")
         newRow.dataset.row = row
 
-        for (let col = 0; col < 8; col++) //columns
+        for (let col = 0; col < 4; col++) //columns
         {
             board[row][col] = "gray"
             let cell = document.createElement("td")
@@ -87,7 +106,7 @@ function initializeBoard()
 function addNewPiece()
 {
     // currentPiece = JSON.parse(JSON.stringify(pieces[getRandomInt(0, pieces.length)]));
-    currentPiece = JSON.parse(JSON.stringify(pieces[3]));
+    currentPiece = JSON.parse(JSON.stringify(pieces[0]));
     updateBoard(currentPiece)
 
     return !isCollision(currentPiece)
@@ -512,5 +531,4 @@ function rotate()
     }
     
 }
-
 
