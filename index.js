@@ -26,13 +26,20 @@ document.addEventListener('DOMContentLoaded', () => {
     let rowsCleared = 0
 
     document.querySelector("#username-form").addEventListener("submit", event => {
+        event.preventDefault()
 
-        debugger
+        // debugger
         user.name = event.target.username.value
+
+        // debugger
 
         fetch(usersPath)
         .then(getResponse)
-        .then(userNameLookUp)
+        .then(el => console.log(el))
+        // .then(userNameLookUp)
+
+        console.log(user)
+        
 
         if(!user.id)
         {
@@ -103,10 +110,12 @@ function getResponse(response)
 
 function userNameLookUp(json)
 {
+    debugger
     for(let i = 0; i < json.length; i++)
     {
         if(json[i].username == user.name)
         {
+            
             user.id =  json[i].id
             return
         }
