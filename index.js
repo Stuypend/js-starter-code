@@ -23,10 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let score = 0;
     let rowsCleared = 0
 
-    // document.querySelector(".username-form").addEventListener("submit", event => {
+    document.querySelector(".username-form").addEventListener("submit", event => {
 
-        // fetch username or create
-        // set user id
+        fetch username or create
+        set user id
 
         document.addEventListener("keydown", event => {
             if (event.code == "ArrowLeft") {
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1000)
 
         // fetch( save score to the user)
-    // })
+    })
 
 })
 
@@ -105,8 +105,8 @@ function initializeBoard()
 
 function addNewPiece()
 {
-    // currentPiece = JSON.parse(JSON.stringify(pieces[getRandomInt(0, pieces.length)]));
-    currentPiece = JSON.parse(JSON.stringify(pieces[6]));
+    currentPiece = JSON.parse(JSON.stringify(pieces[getRandomInt(0, pieces.length)]));
+    // currentPiece = JSON.parse(JSON.stringify(pieces[6]));
     updateBoard(currentPiece)
 
     return !isCollision(currentPiece)
@@ -367,6 +367,7 @@ function rotate()
                     updateBoard(currentPiece)
                 }
             }
+            break;
         }
         case "Z":
         {
@@ -417,6 +418,7 @@ function rotate()
                     updateBoard(currentPiece)
                 }  
             }
+            break;
         }
         case "S":
         {
@@ -472,6 +474,7 @@ function rotate()
                     updateBoard(currentPiece)
                 }  
             }
+            break;
         }
         case "L": // same as s--- OTHER LETTERS ARE FALLING INTO THIS
         {
@@ -522,6 +525,7 @@ function rotate()
                     updateBoard(currentPiece)
                 }  
             }
+            break;
         }
         case "J":
         {
@@ -572,12 +576,13 @@ function rotate()
                     updateBoard(currentPiece)
                 }  
             }
+            break;
         }
         case "T":
         {
             if(currentPiece.position == 1)
             {
-                debugger
+                // debugger
                 let newCoords = [ [coords[0][0]-1, coords[0][1]+1], [coords[1][0], coords[1][1]], [coords[2][0]+1, coords[2][1]+1], [coords[3][0]+1, coords[3][1]-1]]
               
                 if (isRotateValid(newCoords)) {
@@ -623,6 +628,7 @@ function rotate()
                     updateBoard(currentPiece)
                 }  
             }
+            break;
         }
             
     }
