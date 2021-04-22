@@ -1,6 +1,8 @@
 //global variables
 let board = []
 let score = 0
+let usersPath = "http://localhost:3000/users"
+let user = {}
 
 
 let pieces = [
@@ -23,10 +25,26 @@ document.addEventListener('DOMContentLoaded', () => {
     let score = 0;
     let rowsCleared = 0
 
-    document.querySelector(".username-form").addEventListener("submit", event => {
+    document.querySelector("#username-form").addEventListener("submit", event => {
 
-        fetch username or create
-        set user id
+        debugger
+        user.name = event.target.username.value
+
+        fetch(usersPath)
+        .then(getResponse)
+        .then(userNameLookUp)
+
+        if(!user.id)
+        {
+            fetch(usersPath, createUser(user))
+                .then(getResponse)
+                .then(setUser)
+
+            fetch(usersPath)
+                .then(getResponse)
+                .then(userNameLookUp)
+        }
+
 
         document.addEventListener("keydown", event => {
             if (event.code == "ArrowLeft") {
@@ -71,6 +89,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 let currentPiece = ""
+
+function createUser(username)
+{
+    return{ method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json"} , body: JSON.stringify({username}) }
+}
+
+
+function getResponse(response)
+{
+    return response.json()
+}
+
+function userNameLookUp(json)
+{
+    for(let i = 0; i < json.length; i++)
+    {
+        if(json[i].username == user.name)
+        {
+            user.id =  json[i].id
+            return
+        }
+    }
+    user.id =  null
+}
 
 function awardPoints(multi, rows)
 {
@@ -633,5 +675,10 @@ function rotate()
             
     }
     
+}
+
+function setUser(json)
+{
+    user = json
 }
 
