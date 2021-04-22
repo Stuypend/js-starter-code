@@ -3,6 +3,7 @@ let board = []
 let score = 0
 let usersPath = "http://localhost:3000/users"
 let user = {}
+let currentPiece = ""
 
 
 let pieces = [
@@ -62,6 +63,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 awardPoints(clearMultiplier, rowsCleared)
                 if (!addNewPiece()) {
                     console.log("GAME OVER")
+                    debugger
+                    pushScore(score)
                     clearInterval(timer)
                 }
             }
@@ -71,11 +74,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     })
+    
+
  
 })
 
 
-let currentPiece = ""
+function pushScore(score) {
+    const user_id = user.id
+    postObj = { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json"} , body: JSON.stringify({score, user_id }) }
+    fetch("http://localhost:3000/scores", postObj)
+        .then(response => response.json())
+        .then(noOneisReallySureWhatThisThingIsActually => console.log(noOneisReallySureWhatThisThingIsActually))
+}
+
+
+
 
 function createUser(username)
 {
@@ -96,7 +110,7 @@ function getResponse(response)
 
 function setUser(json)
 {
-    debugger
+    // debugger
     user.id = json.id
 }
 
