@@ -33,24 +33,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // debugger
 
+        // fetch(`http://127.0.0.1:3000/users.json`)
+        //     .then(res => res.json())
+        //     .then(res1 => console.log(res1))
+
         fetch(usersPath)
-        .then(getResponse)
-        .then(el => console.log(el))
-        // .then(userNameLookUp)
+            .then(getResponse)
+            .then(userNameLookUp)
+            // .then(res => console.log(res))
 
-        console.log(user)
-        
+        // console.log(user)
 
-        if(!user.id)
-        {
-            fetch(usersPath, createUser(user))
-                .then(getResponse)
-                .then(setUser)
+        // if(!user.id)
+        // {
+        //     // debugger
+        //     fetch(usersPath, createUser(user))
+        //         .then(getResponse)
+        //         .then(setUser)
 
-            fetch(usersPath)
-                .then(getResponse)
-                .then(userNameLookUp)
-        }
+        //     fetch(usersPath)
+        //         .then(getResponse)
+        //         .then(userNameLookUp)
+        // }
+
+
 
 
         document.addEventListener("keydown", event => {
@@ -102,14 +108,22 @@ function createUser(username)
     return{ method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json"} , body: JSON.stringify({username}) }
 }
 
+function getUsers() {
+
+    return { method: "GET", headers: { "Content-Type": "application/json", "Accept": "application/json" } }
+}
+
 
 function getResponse(response)
 {
+    // debugger
     return response.json()
 }
 
 function userNameLookUp(json)
 {
+    // debugger
+    console.log(json)
     debugger
     for(let i = 0; i < json.length; i++)
     {
