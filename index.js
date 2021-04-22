@@ -12,7 +12,7 @@ let pieces = [
     { coordinates: [ [1,0], [1,1], [0,1], [0,2] ], color: "green", letter: "S", position: 1},
     { coordinates: [ [1,0], [1,1], [1,2], [0,2] ], color: "orange", letter: "L", position: 1},
     { coordinates: [ [0,0], [1,0], [1,1], [1,2] ], color: "pink", letter: "J", position: 1},
-    { coordinates: [ [0,1], [1,0], [1,1], [1,2] ], color: "purple", letter: "T", position: 1}   
+    { coordinates: [ [1,0], [1,1], [0,1], [1,2] ], color: "purple", letter: "T", position: 1}   
 ]
 
 
@@ -27,22 +27,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector("#username-form").addEventListener("submit", event => {
         event.preventDefault()
 
-        // debugger
         user.name = event.target.username.value
-
-        // debugger
-
-        // fetch(`http://127.0.0.1:3000/users.json`)
-        //     .then(res => res.json())
-        //     .then(res1 => console.log(res1))
 
         fetch(usersPath)
             .then(getResponse)
             .then(userNameLookUp)
-            // .then(res => console.log(res))
-
-        // console.log(user)
-
+ 
         document.addEventListener("keydown", event => {
             if (event.code == "ArrowLeft") {
                 moveLeft(currentPiece)
@@ -79,9 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         }, 1000)
 
-        // fetch( save score to the user)
-    })
 
+    })
+ 
 })
 
 
@@ -655,7 +645,7 @@ function rotate()
                 }  
             } else if(currentPiece.position == 2)
             {
-                let newCoords = [ [coords[0][0]+1, coords[0][1]+1], [coords[1][0], coords[1][1]], [coords[2][0]+1, coords[2][1]-1], [coords[3][0]+1, coords[3][1]-1] ]
+                let newCoords = [ [coords[0][0]+1, coords[0][1]+1], [coords[1][0], coords[1][1]], [coords[2][0]+1, coords[2][1]-1], [coords[3][0]-1, coords[3][1]-1] ]
                 if (isRotateValid(newCoords)) {
                     for (let i = 0; i < coords.length; i++) {
                         updateCell(coords[i][0], coords[i][1])
@@ -666,7 +656,7 @@ function rotate()
                 }  
             } else if(currentPiece.position == 3)
             {
-                let newCoords = [ [coords[0][0]+1, coords[0][1]-1], [coords[1][0], coords[1][1]], [coords[2][0]-1, coords[2][1]-1], [coords[3][0]-1, coords[3][1]-1] ]
+                let newCoords = [ [coords[0][0]+1, coords[0][1]-1], [coords[1][0], coords[1][1]], [coords[2][0]-1, coords[2][1]-1], [coords[3][0]-1, coords[3][1]+1] ]
                 if (isRotateValid(newCoords)) {
                     for (let i = 0; i < coords.length; i++) {
                         updateCell(coords[i][0], coords[i][1])
@@ -678,7 +668,7 @@ function rotate()
             }
             else if(currentPiece.position == 4)
             {
-                let newCoords = [ [coords[0][0]-1, coords[0][1]-1], [coords[1][0], coords[1][1]], [coords[2][0]-1, coords[2][1]+1], [coords[3][0]-1, coords[3][1]+1] ]
+                let newCoords = [ [coords[0][0]-1, coords[0][1]-1], [coords[1][0], coords[1][1]], [coords[2][0]-1, coords[2][1]+1], [coords[3][0]+1, coords[3][1]+1] ]
                 if (isRotateValid(newCoords)) {
                     for (let i = 0; i < coords.length; i++) {
                         updateCell(coords[i][0], coords[i][1])
