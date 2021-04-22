@@ -12,8 +12,7 @@ let pieces = [
     { coordinates: [ [1,0], [1,1], [0,1], [0,2] ], color: "green", letter: "S", position: 1},
     { coordinates: [ [1,0], [1,1], [1,2], [0,2] ], color: "orange", letter: "L", position: 1},
     { coordinates: [ [0,0], [1,0], [1,1], [1,2] ], color: "pink", letter: "J", position: 1},
-    { coordinates: [ [0,1], [1,0], [1,1], [1,2] ], color: "purple", letter: "T", position: 1}
-    
+    { coordinates: [ [0,1], [1,0], [1,1], [1,2] ], color: "purple", letter: "T", position: 1}   
 ]
 
 
@@ -43,21 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // .then(res => console.log(res))
 
         // console.log(user)
-
-        // if(!user.id)
-        // {
-        //     // debugger
-        //     fetch(usersPath, createUser(user))
-        //         .then(getResponse)
-        //         .then(setUser)
-
-        //     fetch(usersPath)
-        //         .then(getResponse)
-        //         .then(userNameLookUp)
-        // }
-
-
-
 
         document.addEventListener("keydown", event => {
             if (event.code == "ArrowLeft") {
@@ -120,11 +104,15 @@ function getResponse(response)
     return response.json()
 }
 
+function setUser(json)
+{
+    debugger
+    user.id = json.id
+}
+
 function userNameLookUp(json)
 {
     // debugger
-    console.log(json)
-    debugger
     for(let i = 0; i < json.length; i++)
     {
         if(json[i].username == user.name)
@@ -134,7 +122,14 @@ function userNameLookUp(json)
             return
         }
     }
-    user.id =  null
+
+    fetch(usersPath, createUser(user))
+        .then(getResponse)
+        .then(setUser)
+
+    // fetch(usersPath)
+    //     .then(getResponse)
+    //     .then(userNameLookUp)
 }
 
 function awardPoints(multi, rows)
@@ -700,8 +695,5 @@ function rotate()
     
 }
 
-function setUser(json)
-{
-    user = json
-}
+
 
