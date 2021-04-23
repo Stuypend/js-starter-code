@@ -2,6 +2,7 @@
 let board = []
 let score = 0
 let usersPath = "http://localhost:3000/users"
+const scorePath = "http://localhost:3000/scores"
 let user = {}
 let currentPiece = ""
 
@@ -22,8 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     let table = initializeBoard()
-    let score = 0;
     let rowsCleared = 0
+    getHighScores()
 
     document.querySelector("#username-form").addEventListener("submit", event => {
         event.preventDefault()
@@ -33,7 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch(usersPath)
             .then(getResponse)
             .then(userNameLookUp)
- 
+        
+
         document.addEventListener("keydown", event => {
             if (event.code == "ArrowLeft") {
                 moveLeft(currentPiece)
@@ -63,37 +65,98 @@ document.addEventListener('DOMContentLoaded', () => {
                 awardPoints(clearMultiplier, rowsCleared)
                 if (!addNewPiece()) {
                     console.log("GAME OVER")
-                    debugger
+                    // debugger
                     pushScore(score)
                     clearInterval(timer)
                 }
             }
-
-
         }, 1000)
 
 
+        document.querySelector("#update-name-form").addEventListener("submit", event => {
+            event.preventDefault()
+            user.name = event.target.newusername.value
+            updateName(user.name)
+        })
     })
-    
-
- 
 })
+
+function updateName(username) {
+    patchObj = { method: "PATCH", headers: { "Content-Type": "application/json", "Accept": "application/json"} , body: JSON.stringify({username}) }
+    // debugger
+    fetch(`${usersPath}/${user.id}`, patchObj)
+        .then(getResponse)
+        .then(noOneisReallySureWhatThisThingIsActually => console.log(noOneisReallySureWhatThisThingIsActually))
+
+
+}
 
 
 function pushScore(score) {
     const user_id = user.id
-    postObj = { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json"} , body: JSON.stringify({score, user_id }) }
-    fetch("http://localhost:3000/scores", postObj)
+    postObj = { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json"} , body: JSON.stringify({score, user_id}) }
+    fetch(scorePath, postObj)
         .then(response => response.json())
         .then(noOneisReallySureWhatThisThingIsActually => console.log(noOneisReallySureWhatThisThingIsActually))
 }
+
+function getUserScore(){
+
+    fetch(`${usersPath}/${user.id}`)
+        .then(getResponse)
+        .then(scores => {
+            document.querySelector("#user-score-header").textContent = `${user.name}'s Scores`
+            for(let i = 0; i < scores.length; i++){
+                let li = document.createElement("li")
+                li.textContent = scores[i].score
+                document.querySelector("#user-score-list").append(li)
+            }
+        })
+}
+
+function getHighScores(){
+
+    fetch(scorePath)
+        .then(getResponse)
+        .then(scores => {
+            highScores = document.querySelector(".scores")
+            highScores.style.backgroundColor = "teal"
+            for(let i = 0; i < scores.length; i++){
+                let tr = document.createElement("tr")
+                
+                let score = document.createElement("td")
+                let user = document.createElement("td")
+                let date = document.createElement("td")
+
+                score.textContent = scores[i].score
+                user.textContent = scores[i].username
+                date.textContent = scores[i].date
+
+                tr.append(user, score, date)
+                // tr.insertCell(score)
+                // tr.insertCell(user)
+
+                // let row = highScores.insertRow(i)
+                // let user = row.insertCell(0)
+                // let score = row.insertCell(1)
+                // let date = row.insertCell(2)
+
+                // user.innerHTML = `${scores[i].username}`
+                // score.innerHTML = `${scores[i].score}`
+                // date.innerHTML = `${scores[i].date}`
+                highScores.append(tr)
+            }
+        })
+
+}
+
 
 
 
 
 function createUser(username)
 {
-    return{ method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json"} , body: JSON.stringify({username}) }
+    return { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json"} , body: JSON.stringify({username}) }
 }
 
 function getUsers() {
@@ -104,14 +167,13 @@ function getUsers() {
 
 function getResponse(response)
 {
-    // debugger
     return response.json()
 }
 
 function setUser(json)
 {
-    // debugger
     user.id = json.id
+    getUserScore()
 }
 
 function userNameLookUp(json)
@@ -121,19 +183,15 @@ function userNameLookUp(json)
     {
         if(json[i].username == user.name)
         {
-            
             user.id =  json[i].id
+            getUserScore()
             return
-        }
+            }
     }
 
-    fetch(usersPath, createUser(user))
+    fetch(usersPath, createUser(user.name))
         .then(getResponse)
         .then(setUser)
-
-    // fetch(usersPath)
-    //     .then(getResponse)
-    //     .then(userNameLookUp)
 }
 
 function awardPoints(multi, rows)
@@ -148,7 +206,7 @@ function initializeBoard()
 {
     let table = document.querySelector(".board")
 
-    for (let row = 0; row < 10; row++)
+    for (let row = 0; row < 20; row++)
     {
         board.push([])
         let newRow = document.createElement("tr")
@@ -169,8 +227,18 @@ function initializeBoard()
 
 function addNewPiece()
 {
+
+    
     currentPiece = JSON.parse(JSON.stringify(pieces[getRandomInt(0, pieces.length)]));
     // currentPiece = JSON.parse(JSON.stringify(pieces[6]));
+
+    let num = board[0].length - currentPiece.coordinates[3][1]
+    let randInt = getRandomInt(0, num)
+
+    for (let i = 0; i < 4; i++) {
+        currentPiece.coordinates[i][1] += randInt
+    }
+
     updateBoard(currentPiece)
 
     return !isCollision(currentPiece)
