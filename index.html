@@ -12,15 +12,17 @@
 
 <body>
     <h1> BEAUTIFUL TETRIS</h1>
+    
     <h3>Score: </h3>
     <div class='page'>
       <div id='user' >
+        <h4> Enter a user name to begin </h4>
         <form id="username-form">
-          <br>
+          <!-- <br> -->
           <!-- Assign character id as a value here -->
           <input type="text" placeholder="Name" id="username"/>
           <br>
-          <input type="submit" value="Create Friend"/>
+          <input type="submit" value="Enter Username"/>
           <br>
         </form>
         <br>
@@ -30,10 +32,9 @@
         </ul>
         <form id="update-name-form">
           <br>
-          <!-- Assign character id as a value here -->
           <input type="text" placeholder="Name" id="newusername"/>
           <br>
-          <input type="submit" value="Create Friend"/>
+          <input type="submit" value="Update Username"/>
           <br>
         </form>
       </div>
@@ -47,8 +48,10 @@
           </tbody>
         </table>
       </div>
-
+      
       <div id='high-scores'> 
+        <h2> All Time High Scores</h2>
+        <br>
         <table class='scores' border="1" >
           <tr class="scores" background-color = "white">
             <th>User</th>

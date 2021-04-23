@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(getResponse)
             .then(userNameLookUp)
         
+        document.querySelector("h4").textContent = ``
 
         document.addEventListener("keydown", event => {
             if (event.code == "ArrowLeft") {
@@ -44,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (event.code == "ArrowDown") {
                 moveDown(currentPiece)
             } else if (event.code == "Space") {
-                console.log("Space")
+                // console.log("Space")
                 rotate()
             }
         });
@@ -78,6 +79,12 @@ document.addEventListener('DOMContentLoaded', () => {
             user.name = event.target.newusername.value
             updateName(user.name)
         })
+
+        document.querySelector("#user-score-list").addEventListener("click", event => {
+            event.preventDefault()
+            deleteScore(event.target.dataset.scoreId)
+            event.target.parentElement.remove()
+        })
     })
 })
 
@@ -100,6 +107,13 @@ function pushScore(score) {
         .then(noOneisReallySureWhatThisThingIsActually => console.log(noOneisReallySureWhatThisThingIsActually))
 }
 
+function deleteScore(id){
+    deleteObj = { method: "DELETE", headers: { "Content-Type": "application/json", "Accept": "application/json"} , body: JSON.stringify({id}) }
+    fetch(`${scorePath}/${id}`, deleteObj)
+        .then(getResponse)
+        .then(res => res)
+}
+
 function getUserScore(){
 
     fetch(`${usersPath}/${user.id}`)
@@ -109,6 +123,10 @@ function getUserScore(){
             for(let i = 0; i < scores.length; i++){
                 let li = document.createElement("li")
                 li.textContent = scores[i].score
+                deleteButton = document.createElement("button")
+                deleteButton.dataset.scoreId = scores[i].id
+                deleteButton.textContent = "x"
+                li.append(deleteButton)
                 document.querySelector("#user-score-list").append(li)
             }
         })
@@ -120,7 +138,7 @@ function getHighScores(){
         .then(getResponse)
         .then(scores => {
             highScores = document.querySelector(".scores")
-            highScores.style.backgroundColor = "teal"
+            highScores.style.backgroundColor = "yellow"
             for(let i = 0; i < scores.length; i++){
                 let tr = document.createElement("tr")
                 
@@ -133,17 +151,7 @@ function getHighScores(){
                 date.textContent = scores[i].date
 
                 tr.append(user, score, date)
-                // tr.insertCell(score)
-                // tr.insertCell(user)
 
-                // let row = highScores.insertRow(i)
-                // let user = row.insertCell(0)
-                // let score = row.insertCell(1)
-                // let date = row.insertCell(2)
-
-                // user.innerHTML = `${scores[i].username}`
-                // score.innerHTML = `${scores[i].score}`
-                // date.innerHTML = `${scores[i].date}`
                 highScores.append(tr)
             }
         })
@@ -199,7 +207,7 @@ function awardPoints(multi, rows)
     let level = Math.floor(rows/10)
     score += 40 * multi * (level+1)
 
-    document.querySelector("h1").textContent = `Score: ${score} Level: ${level}`
+    document.querySelector("h3").textContent = `Score: ${score} Level: ${level}`
 }
 
 function initializeBoard()
